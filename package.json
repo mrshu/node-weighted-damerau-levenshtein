@@ -1,0 +1,29 @@
+{
+  "name": "weighted-damerau-levenshtein",
+  "version": "0.1.0",
+  "description": "An implementation of weighted Damerau–Levenshtein distance.",
+  "main": "index.js",
+  "scripts": {
+    "test": "nyc mocha"
+  },
+  "keywords": [
+    "distance",
+    "levenshtein",
+    "damerau",
+    "weights",
+    "weighted",
+    "edit",
+    "string"
+  ],
+  "author": "Marek Suppa",
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+    "eslint": "^6.5.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2"
+  },
+  "dependencies": {
+    "mocha": "^6.2.1",
+    "nyc": "^14.1.1"
+  }
+}
