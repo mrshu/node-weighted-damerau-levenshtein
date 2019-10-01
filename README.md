@@ -1,5 +1,6 @@
-Weighted Damerau–Levenshtein distance
-=====================================
+# Weighted Damerau–Levenshtein distance | ![Travis (.org)](https://img.shields.io/travis/mrshu/node-weighted-damerau-levenshtein)
+
+
 
 A simple Node module that allows you to compute [Damerau–Levenshtein
 distance](https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance)
@@ -39,5 +40,11 @@ const s = dldist('Hi there', 'Hi tehre', { useDamerau: false });
 Install
 -------
 
-  npm install weighted-damerau-levenshtein
+    npm install weighted-damerau-levenshtein
 
+
+License
+-------
+
+Licensed under the terms of the Apache 2.0 license. See the
+[LICENSE](./LICENSE) file for more details.
