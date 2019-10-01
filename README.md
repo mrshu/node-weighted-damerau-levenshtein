@@ -1,4 +1,4 @@
-# Weighted Damerau–Levenshtein distance | ![Travis (.org)](https://img.shields.io/travis/mrshu/node-weighted-damerau-levenshtein)
+# Weighted Damerau–Levenshtein distance | ![Travis (.org)](https://img.shields.io/travis/mrshu/node-weighted-damerau-levenshtein) [![Coverage Status](https://coveralls.io/repos/github/mrshu/node-weighted-damerau-levenshtein/badge.svg?branch=master)](https://coveralls.io/github/mrshu/node-weighted-damerau-levenshtein?branch=master)
 
 
 
