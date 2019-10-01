@@ -1,6 +1,6 @@
-# Weighted Damerau–Levenshtein distance | ![Travis (.org)](https://img.shields.io/travis/mrshu/node-weighted-damerau-levenshtein) [![Coverage Status](https://coveralls.io/repos/github/mrshu/node-weighted-damerau-levenshtein/badge.svg?branch=master)](https://coveralls.io/github/mrshu/node-weighted-damerau-levenshtein?branch=master)
+# Weighted Damerau–Levenshtein distance
 
-
+![Travis (.org)](https://img.shields.io/travis/mrshu/node-weighted-damerau-levenshtein) [![Coverage Status](https://coveralls.io/repos/github/mrshu/node-weighted-damerau-levenshtein/badge.svg?branch=master)](https://coveralls.io/github/mrshu/node-weighted-damerau-levenshtein?branch=master)
 
 A simple Node module that allows you to compute [Damerau–Levenshtein
 distance](https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance)
