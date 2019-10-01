@@ -1,6 +1,6 @@
 {
   "name": "weighted-damerau-levenshtein",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "An implementation of weighted Damerau–Levenshtein distance.",
   "main": "index.js",
   "scripts": {
