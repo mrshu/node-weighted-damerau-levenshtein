@@ -1,50 +1,94 @@
-# Weighted Damerau–Levenshtein distance
+# Weighted Damerau-Levenshtein Distance for Node.js
 
-![Travis (.org)](https://img.shields.io/travis/mrshu/node-weighted-damerau-levenshtein) [![Coverage Status](https://coveralls.io/repos/github/mrshu/node-weighted-damerau-levenshtein/badge.svg?branch=master)](https://coveralls.io/github/mrshu/node-weighted-damerau-levenshtein?branch=master) ![NPM](https://img.shields.io/npm/l/weighted-damerau-levenshtein)
+[![CI](https://github.com/mrshu/node-weighted-damerau-levenshtein/actions/workflows/ci.yml/badge.svg)](https://github.com/mrshu/node-weighted-damerau-levenshtein/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/weighted-damerau-levenshtein.svg)](https://www.npmjs.com/package/weighted-damerau-levenshtein)
+[![npm downloads](https://img.shields.io/npm/dm/weighted-damerau-levenshtein.svg)](https://www.npmjs.com/package/weighted-damerau-levenshtein)
+[![License: Apache-2.0](https://img.shields.io/npm/l/weighted-damerau-levenshtein.svg)](./LICENSE)
 
-A simple Node module that allows you to compute [Damerau–Levenshtein
-distance](https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance)
-with custom weights for insertion, deletion and/or substitution (they all
-default to `1`). It is inspired by the
-[damerau-levenshtein](https://github.com/tad-lispy/node-damerau-levenshtein)
-and
-[damerau-levenshtein-js](https://github.com/fabvalaaah/damerau-levenshtein-js)
-packages.
+Weighted Damerau-Levenshtein and Levenshtein edit distance with configurable operation costs.
+Useful for typo tolerance, fuzzy matching, search ranking, and query correction in TypeScript/JavaScript/Node.js.
 
-```js
-let dldist = require('weighted-damerau-levenshtein');
+## Install
 
-const d = dldist('hello word', 'Hello World!');
-// 4 -> two substitutions and two insertions
-
-const s = dldist('hello word', 'Hello World!', { insWeight: 0.5 });
-// 3 -> two substitutions with weight 1 and two insertions with weight 0.5
-
+```bash
+npm install weighted-damerau-levenshtein
 ```
 
-It also optionally allows you to turn-off the "Damerau" part of the
-Damerau-Levenshtein distance (i..e the transpositions), which makes it the
-standard [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance).
+Requires Node.js 20 or newer.
+
+## Why this package
+
+- Configurable insertion, deletion, and substitution weights
+- Optional transposition support (`useDamerau: true/false`)
+- Runtime input validation for safer production usage
+- Zero runtime dependencies
+- Included TypeScript declarations (`index.d.ts`)
+
+## Usage
 
 ```js
-let dldist = require('weighted-damerau-levenshtein');
+const distance = require('weighted-damerau-levenshtein');
 
-const d = dldist('Hi there', 'Hi tehre');
-// 1 -> one transpostion (counted with the default subsitution weight)
+// Weighted Damerau-Levenshtein
+const a = distance('hello word', 'Hello World!');
+// 4 (two substitutions + two insertions)
 
-const s = dldist('Hi there', 'Hi tehre', { useDamerau: false });
-// 2 -> one substitution and one deletion (both with default weight)
+// Lower insertion cost
+const b = distance('hello word', 'Hello World!', { insWeight: 0.5 });
+// 3
 
+// Classic Levenshtein (Damerau disabled)
+const c = distance('Hi there', 'Hi tehre', { useDamerau: false });
+// 2
 ```
 
-Install
--------
+## TypeScript
 
-    npm install weighted-damerau-levenshtein
+This package ships with built-in type declarations (`index.d.ts`).
 
+```ts
+import distance = require('weighted-damerau-levenshtein');
 
-License
--------
+const score: number = distance('kitten', 'sitting', {
+  insWeight: 1,
+  delWeight: 1,
+  subWeight: 1,
+  useDamerau: true,
+});
+```
 
-Licensed under the terms of the Apache 2.0 license. See the
-[LICENSE](./LICENSE) file for more details.
+## API
+
+`distance(source, target, options?) => number`
+
+Options:
+
+- `insWeight` (`number`, default `1`)
+- `delWeight` (`number`, default `1`)
+- `subWeight` (`number`, default `1`)
+- `useDamerau` (`boolean`, default `true`)
+
+Validation behavior:
+
+- `source` and `target` must be strings
+- Weights must be finite numbers greater than or equal to `0`
+- `useDamerau` must be a boolean
+- Unknown option keys throw a `TypeError`
+
+## Development
+
+```bash
+npm install
+npm run ci
+npm run pack:check
+```
+
+## Release
+
+- CI runs in GitHub Actions from `.github/workflows/ci.yml`
+- Publishing runs from `.github/workflows/publish.yml` on semver tags (`vX.Y.Z`)
+- `npm publish --provenance` requires repository `NPM_TOKEN` and npm publisher setup
+
+## License
+
+Licensed under Apache 2.0. See [LICENSE](./LICENSE).

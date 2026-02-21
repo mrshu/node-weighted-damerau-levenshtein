@@ -16,63 +16,138 @@
 */
 
 
-module.exports = function dldist(s1, s2, opts = {}) {
-  const insWeight = 'insWeight' in opts ? opts.insWeight : 1;
-  const delWeight = 'delWeight' in opts ? opts.delWeight : 1;
-  const subWeight = 'subWeight' in opts ? opts.subWeight : 1;
-  const useDamerau = 'useDamerau' in opts ? opts.useDamerau : true;
-  let d = [];
+const DEFAULT_OPTIONS = Object.freeze({
+  insWeight: 1,
+  delWeight: 1,
+  subWeight: 1,
+  useDamerau: true,
+});
 
-  if (s1.length === 0) {
-    // if s1 string is empty, just insert the s2 string
-    return s2.length * insWeight;
+const NUMERIC_OPTIONS = ['insWeight', 'delWeight', 'subWeight'];
+const ALLOWED_OPTIONS = new Set([...NUMERIC_OPTIONS, 'useDamerau']);
+
+function describeValue(value) {
+  if (value === null) return 'null';
+  if (Array.isArray(value)) return 'array';
+  return typeof value;
+}
+
+function assertString(value, name) {
+  if (typeof value !== 'string') {
+    throw new TypeError(`"${name}" must be a string. Received ${describeValue(value)}.`);
+  }
+}
+
+function assertPlainOptionsObject(options) {
+  if (options === null || typeof options !== 'object' || Array.isArray(options)) {
+    throw new TypeError(`"opts" must be a plain object when provided. Received ${describeValue(options)}.`);
   }
 
-  if (s2.length === 0) {
-    // if s2 string is empty, just delete the s1 string
-    return s1.length * delWeight;
+  const prototype = Object.getPrototypeOf(options);
+  if (prototype !== Object.prototype && prototype !== null) {
+    throw new TypeError('"opts" must be a plain object.');
+  }
+}
+
+function validateWeight(name, value) {
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    throw new TypeError(`"${name}" must be a finite number. Received ${describeValue(value)}.`);
   }
 
-  // Init the matrix
-  for (let i = 0; i <= s1.length; i += 1) {
-    d[i] = [];
-    d[i][0] = i * delWeight;
+  if (value < 0) {
+    throw new RangeError(`"${name}" must be greater than or equal to 0.`);
+  }
+}
+
+function validateUseDamerau(value) {
+  if (typeof value !== 'boolean') {
+    throw new TypeError(`"useDamerau" must be a boolean. Received ${describeValue(value)}.`);
+  }
+}
+
+function normalizeOptions(options) {
+  if (options === undefined) return DEFAULT_OPTIONS;
+
+  assertPlainOptionsObject(options);
+
+  const normalized = {
+    insWeight: DEFAULT_OPTIONS.insWeight,
+    delWeight: DEFAULT_OPTIONS.delWeight,
+    subWeight: DEFAULT_OPTIONS.subWeight,
+    useDamerau: DEFAULT_OPTIONS.useDamerau,
+  };
+
+  for (const key of Object.keys(options)) {
+    if (!ALLOWED_OPTIONS.has(key)) {
+      throw new TypeError(`Unknown option "${key}". Allowed options are insWeight, delWeight, subWeight, useDamerau.`);
+    }
+
+    normalized[key] = options[key];
   }
 
-  for (let j = 0; j <= s2.length; j += 1) {
-    d[0][j] = j * insWeight;
+  for (const key of NUMERIC_OPTIONS) {
+    validateWeight(key, normalized[key]);
+  }
+  validateUseDamerau(normalized.useDamerau);
+
+  return normalized;
+}
+
+function dldist(s1, s2, opts) {
+  assertString(s1, 's1');
+  assertString(s2, 's2');
+
+  const { insWeight, delWeight, subWeight, useDamerau } = normalizeOptions(opts);
+  const sourceLength = s1.length;
+  const targetLength = s2.length;
+
+  if (sourceLength === 0) {
+    return targetLength * insWeight;
   }
 
-  for (let i = 1; i <= s1.length; i += 1) {
-    for (let j = 1; j <= s2.length; j += 1) {
-      let subCostIncrement = subWeight;
-      if (s1.charAt(i - 1) === s2.charAt(j - 1)) {
-        subCostIncrement = 0;
+  if (targetLength === 0) {
+    return sourceLength * delWeight;
+  }
+
+  const matrix = Array.from({ length: sourceLength + 1 }, () => new Array(targetLength + 1));
+
+  for (let i = 0; i <= sourceLength; i += 1) {
+    matrix[i][0] = i * delWeight;
+  }
+
+  for (let j = 0; j <= targetLength; j += 1) {
+    matrix[0][j] = j * insWeight;
+  }
+
+  for (let i = 1; i <= sourceLength; i += 1) {
+    for (let j = 1; j <= targetLength; j += 1) {
+      const substitutionCost = s1.charAt(i - 1) === s2.charAt(j - 1) ? 0 : subWeight;
+
+      const deleteCost = matrix[i - 1][j] + delWeight;
+      const insertCost = matrix[i][j - 1] + insWeight;
+      const substituteCost = matrix[i - 1][j - 1] + substitutionCost;
+
+      let minCost = deleteCost;
+      if (insertCost < minCost) minCost = insertCost;
+      if (substituteCost < minCost) minCost = substituteCost;
+
+      if (
+        useDamerau
+        && i > 1
+        && j > 1
+        && s1.charAt(i - 1) === s2.charAt(j - 2)
+        && s1.charAt(i - 2) === s2.charAt(j - 1)
+      ) {
+        const transpositionCost = matrix[i - 2][j - 2] + substitutionCost;
+        if (transpositionCost < minCost) minCost = transpositionCost;
       }
 
-      const delCost = d[i - 1][j] + delWeight;
-      const insCost = d[i][j - 1] + insWeight;
-      const subCost = d[i - 1][j - 1] + subCostIncrement;
-
-      let min = delCost;
-      if (insCost < min) min = insCost;
-      if (subCost < min) min = subCost;
-
-
-      if (useDamerau) {
-        if (i > 1 && j > 1
-          && s1.charAt(i - 1) === s2.charAt(j - 2)
-          && s1.charAt(i - 2) === s2.charAt(j - 1)) {
-          const transCost = d[i - 2][j - 2] + subCostIncrement;
-
-          if (transCost < min) min = transCost;
-        }
-      }
-
-
-      d[i][j] = min;
+      matrix[i][j] = minCost;
     }
   }
 
-  return d[s1.length][s2.length];
-};
+  return matrix[sourceLength][targetLength];
+}
+
+module.exports = dldist;
+module.exports.default = dldist;

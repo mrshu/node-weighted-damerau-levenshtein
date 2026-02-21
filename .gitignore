@@ -1,2 +1,5 @@
-.nyc_output
-.eslintrc.yml
+node_modules/
+coverage/
+.nyc_output/
+*.log
+.DS_Store
