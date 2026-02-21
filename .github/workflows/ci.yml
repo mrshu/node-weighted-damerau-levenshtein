@@ -23,7 +23,7 @@ jobs:
             strict-coverage: true
             experimental: false
           - node-version: 24
-            strict-coverage: false
+            strict-coverage: true
             experimental: false
           - node-version: 25
             strict-coverage: false
