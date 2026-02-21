@@ -27,7 +27,8 @@
     "lint": "eslint .",
     "test": "node --test test/index.test.js",
     "test:coverage": "node --test --experimental-test-coverage --test-coverage-include=index.js --test-coverage-lines=100 --test-coverage-functions=100 --test-coverage-branches=100 test/index.test.js",
-    "ci": "npm run lint && npm run test:coverage",
+    "verify": "npm run lint && npm test",
+    "ci": "npm run verify && npm run test:coverage",
     "pack:check": "npm pack --dry-run",
     "prepublishOnly": "npm run ci"
   },

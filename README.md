@@ -83,6 +83,9 @@ npm run ci
 npm run pack:check
 ```
 
+`npm run verify` runs lint + tests on any supported Node version.  
+`npm run test:coverage` enforces strict 100% coverage thresholds (used in CI on Node 22).
+
 ## Release
 
 - CI runs in GitHub Actions from `.github/workflows/ci.yml`
