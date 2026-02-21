@@ -6,6 +6,18 @@ adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-02-21
+
+### Changed
+
+- Fixed CI compatibility by running strict coverage checks only where the
+  Node runner supports coverage threshold flags.
+- Expanded CI runtime coverage to include Node 24 and added Node 25 as a
+  non-blocking smoke job.
+- Enforced strict 100% coverage gates on both Node 22 and Node 24.
+- Improved README release/development notes around the CI matrix and
+  coverage behavior.
+
 ## [0.2.0] - 2026-02-21
 
 ### Added

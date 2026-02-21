@@ -1,6 +1,6 @@
 {
   "name": "weighted-damerau-levenshtein",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Weighted Damerau-Levenshtein and Levenshtein edit distance for Node.js with configurable operation costs.",
   "main": "./index.js",
   "type": "commonjs",
