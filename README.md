@@ -89,6 +89,8 @@ npm run pack:check
 ## Release
 
 - CI runs in GitHub Actions from `.github/workflows/ci.yml`
+- CI matrix runs `verify` on Node 20/22/24, with Node 25 as a non-blocking smoke check
+- Strict 100% coverage enforcement runs on Node 22
 - Publishing runs from `.github/workflows/publish.yml` on semver tags (`vX.Y.Z`)
 - `npm publish --provenance` requires repository `NPM_TOKEN` and npm publisher setup
 
